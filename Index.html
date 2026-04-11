@@ -265,9 +265,9 @@ header {
   min-width: 70px;
   text-align: center;
 }
-.badge-paro  { background: rgba(255,59,59,0.2);  color: var(--rojo); }
-.badge-scrap { background: rgba(255,184,0,0.2);  color: var(--amarillo); }
-.badge-ayuda { background: rgba(0,173,238,0.2);  color: var(--cyan); }
+.badge-no conforme  { background: rgba(255,59,59,0.2);  color: var(--rojo); }
+.badge-en liberación { background: rgba(255,184,0,0.2);  color: var(--amarillo); }
+.badge-desviación { background: rgba(0,173,238,0.2);  color: var(--cyan); }
 .badge-ok    { background: rgba(0,201,107,0.2);  color: var(--verde); }
 
 .evento-info { flex: 1; }
@@ -368,9 +368,9 @@ header {
   color: var(--texto2);
 }
 .tipo-btn:hover { border-color: var(--texto2); color: var(--texto); }
-.tipo-btn.sel-paro  { border-color: var(--rojo);     color: var(--rojo);     background: rgba(255,59,59,0.1); }
-.tipo-btn.sel-scrap { border-color: var(--amarillo);  color: var(--amarillo); background: rgba(255,184,0,0.1); }
-.tipo-btn.sel-ayuda { border-color: var(--cyan);      color: var(--cyan);     background: rgba(0,173,238,0.1); }
+.tipo-btn.sel-no conforme  { border-color: var(--rojo);     color: var(--rojo);     background: rgba(255,59,59,0.1); }
+.tipo-btn.sel-en liberación { border-color: var(--amarillo);  color: var(--amarillo); background: rgba(255,184,0,0.1); }
+.tipo-btn.sel-desviación { border-color: var(--cyan);      color: var(--cyan);     background: rgba(0,173,238,0.1); }
 .tipo-btn.sel-ok    { border-color: var(--verde);     color: var(--verde);    background: rgba(0,201,107,0.1); }
 .tipo-icono { font-size: 26px; line-height: 1; margin-bottom: 4px; }
 .tipo-label { font-family: 'Barlow Condensed', sans-serif; font-size: 14px; font-weight: 700; letter-spacing: 0.5px; }
@@ -599,19 +599,19 @@ header {
       <div class="tipo-btns">
         <div class="tipo-btn" id="btn-paro"  onclick="selTipo('paro')">
           <div class="tipo-icono">🔴</div>
-          <div class="tipo-label">PARO / FALLA</div>
+          <div class="tipo-label">NO CONFORME</div>
         </div>
         <div class="tipo-btn" id="btn-scrap" onclick="selTipo('scrap')">
           <div class="tipo-icono">🟡</div>
-          <div class="tipo-label">SCRAP</div>
+          <div class="tipo-label">EN LIBERACIÓN</div>
         </div>
         <div class="tipo-btn" id="btn-ayuda" onclick="selTipo('ayuda')">
           <div class="tipo-icono">🔵</div>
-          <div class="tipo-label">PEDIR AYUDA</div>
+          <div class="tipo-label">DESVIACIÓN</div>
         </div>
         <div class="tipo-btn" id="btn-ok"    onclick="selTipo('ok')">
           <div class="tipo-icono">🟢</div>
-          <div class="tipo-label">REANUDAR / OK</div>
+          <div class="tipo-label">OK</div>
         </div>
       </div>
     </div>
@@ -721,7 +721,7 @@ function renderizarGrid() {
     const ep = estadosPrensa[p.id];
     const estado = ep ? ep.estado : 'ok';
     const tiempo = ep ? tiempoRelativo(ep.actualizado_en) : '';
-    const iconos = { ok:'✅', paro:'🔴', scrap:'🟡', ayuda:'🔵' };
+    const iconos = { ok:'✅', no_conforme:'🔴', en_liberación:'🟡', desviación:'🔵' };
 
     return `
       <div class="prensa-card estado-${estado}" onclick="verDetalle(${p.id})">
@@ -734,16 +734,16 @@ function renderizarGrid() {
 }
 
 function actualizarKPIs() {
-  const conteo = { ok: 0, paro: 0, scrap: 0, ayuda: 0 };
+  const conteo = { ok: 0, no_conforme: 0, en_liberación: 0, desviación: 0 };
   prensas.forEach(p => {
     const ep = estadosPrensa[p.id];
     const estado = ep ? ep.estado : 'ok';
     conteo[estado] = (conteo[estado] || 0) + 1;
   });
   document.getElementById('kpi-ok').textContent    = conteo.ok    || 0;
-  document.getElementById('kpi-paro').textContent  = conteo.paro  || 0;
-  document.getElementById('kpi-scrap').textContent = conteo.scrap || 0;
-  document.getElementById('kpi-ayuda').textContent = conteo.ayuda || 0;
+  document.getElementById('kpi-paro').textContent  = conteo.no_conforme  || 0;
+  document.getElementById('kpi-scrap').textContent = conteo.en_liberación || 0;
+  document.getElementById('kpi-ayuda').textContent = conteo.desviación || 0;
 }
 
 function poblarSelectPrensas() {
@@ -796,7 +796,7 @@ async function verDetalle(prensaId) {
   const ep = estadosPrensa[prensaId];
   const estado = ep ? ep.estado : 'ok';
 
-  const etiquetas = { ok: '✅ OPERANDO', paro: '🔴 PARO / FALLA', scrap: '🟡 SCRAP', ayuda: '🔵 PIDIENDO AYUDA' };
+  const etiquetas = { ok: '✅ LIBERADA', no_conforme: '🔴 PARO / FALLA', en_liberación: '🟡 EN_LIBERACIÓN', desviación: '🔵 DESVIACIÓN' };
 
   const { data: evts } = await db
     .from('eventos')
